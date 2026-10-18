@@ -1,7 +1,7 @@
 """Welche Menge? Gültig heißt nicht gleich genau - interaktive Konzept-Demo
 Sebastian Hanisch - Operations Research und Machine Learning
 
-Fünftes Stück der Linie Kausale Diagramme und Adjustierung. Mehrere Mengen sind nach dem Adjustierungskriterium gültig; ihre Schätzungen streuen verschieden stark.
+Fünftes Stück der Linie Kausale Diagramme und Adjustierung. Mehrere Mengen sind nach dem Adjustierungskriterium gültig; ihre Schätzungen streuen nicht alle gleich stark.
 Kern: ajm_sets.py, bdr_backdoor.py und dsep_graph.py (wortgleich aus backdoor-demo und d-separation-demo), Generator: kausal_generator.py.
 
 Lauffähig mit: streamlit run app.py
@@ -92,9 +92,9 @@ def verdict(kind_text):
 st.title("🎯 Welche Menge? Gültig heißt nicht gleich genau")
 st.markdown(
     """
-**Unter den gültigen Mengen ist eine die genaueste, und es ist selten die kleinste.** Dies ist das fünfte Stück der Linie **Kausale Diagramme und Adjustierung**. Das
+**Unter den gültigen Mengen ist eine die genaueste, und die kleinste minimale Menge ist es nur in rund der Hälfte der Zufallsdiagramme.** Dies ist das fünfte Stück der Linie **Kausale Diagramme und Adjustierung**. Das
 dritte Stück hat gezeigt, welche Mengen die Hintertüren schließen; das vierte, welche Variablen man nicht aufnimmt. Hier geht es um die Wahl **unter** den gültigen Mengen:
-Sie liefern alle denselben Mittelwert, aber ihre Schätzungen streuen verschieden stark. In linearen Modellen gibt es eine **optimale Menge** (O-Menge), die man aus dem
+Sie liefern alle denselben Mittelwert, aber ihre Schätzungen streuen nicht alle gleich stark. In linearen Modellen gibt es eine **optimale Menge** (O-Menge), die man aus dem
 Diagramm allein abliest.
 
 Weiter unten: vier Experimente (**🔬**), **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
@@ -104,9 +104,9 @@ Weiter unten: vier Experimente (**🔬**), **🚧 Wo die Annahmen enden** und de
 with st.expander("So liest man die genaueste Menge", expanded=True):
     st.markdown(
         """
-1. **Gültig zuerst.** Nur Mengen, die das Adjustierungskriterium erfüllen, kommen in Frage; ungültige haben einen Fehler, der auch mit mehr Daten bleibt.
-2. **Variablen, die nur y bewegen, helfen.** Sie erklären Streuung des Servicegrads, ohne etwas zu verzerren: Der Standardfehler sinkt.
-3. **Variablen, die nur x bewegen, schaden.** Sie binden harmlose Streuung des Faktors, die man braucht, um die Wirkung zu sehen: Der Standardfehler steigt. Ebenso Nachfahren von x.
+1. **Gültig zuerst.** Nur Mengen, die das Adjustierungskriterium erfüllen, kommen in Frage; ungültige haben (bei allgemeinen Koeffizienten) einen Fehler, der auch mit mehr Daten bleibt.
+2. **Variablen, die nur y bewegen, helfen meist.** Sie erklären Streuung des Servicegrads, ohne etwas zu verzerren: Der Standardfehler sinkt meist (Experiment 3: in 91 % der Hinzufügungen).
+3. **Variablen, die nur x bewegen, schaden meist.** Sie binden harmlose Streuung des Faktors, die man braucht, um die Wirkung zu sehen: Der Standardfehler steigt meist (95 %). Ebenso bei Nachfahren von x (92 %).
 4. **Die O-Menge** sind die Eltern der Knoten auf den kausalen Pfaden, ohne die verbotenen Knoten. Keine gültige Menge ist genauer; es kann Gleichstände geben.
         """
     )
@@ -244,10 +244,10 @@ st.markdown(
     f"""
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
-| **Das Diagramm ist richtig** | Die O-Menge folgt aus dem gezeichneten Diagramm. Fehlt ein Pfeil, kann eine „gültige“ Menge verzerrt sein, und die genaueste ist es erst recht. | Wie falsch darf das Diagramm sein? |
+| **Das Diagramm ist richtig** | Die O-Menge folgt aus dem gezeichneten Diagramm. Fehlt ein Pfeil, kann eine „gültige“ Menge verzerrt sein, auch die als genaueste ausgewählte (nicht untersucht, ob stärker). | Wie falsch darf das Diagramm sein? |
 | **Das Modell ist linear, der Schätzer die Regression** | Die Optimalität gilt für die Varianz des Koeffizienten in linearen Modellen. Bei nichtlinearen Zusammenhängen entscheiden die Lernverfahren. | Doppelt robust und Double ML |
-| **Alle Knoten der O-Menge sind beobachtet** | Mit einem unbeobachteten Knoten ist sie nur in {de(100 * res4['o_available'] / res4['diagrams'], 0)} % der Diagramme erreichbar (Experiment 4). | Frontdoor, Instrumente |
-| **n ist groß genug** | Jede Variable kostet einen Freiheitsgrad; die Formel ist asymptotisch. Bei n ≥ 100 und höchstens fünf Variablen ist der Unterschied gering, gemessen wurde er nicht. | Schätzen |
+| **Alle Knoten der O-Menge sind beobachtet** | Bei einem zufällig verdeckten Knoten (7-Knoten-Diagramme) ist sie in {de(100 * res4['o_available'] / res4['diagrams'], 0)} % der Diagramme erreichbar (Experiment 4). | Frontdoor, Instrumente |
+| **n ist groß genug** | Jede Variable kostet einen Freiheitsgrad; die Formel ist asymptotisch. Bei n ≥ 100 und höchstens fünf Variablen ist der Unterschied nach einer Überschlagsrechnung klein gegenüber den Unterschieden zwischen den Mengen, aber nicht null; gemessen wurde er nicht. | Schätzen |
 | **Messen kostet nichts** | Die Demo zählt nur die Varianz, nicht den Aufwand je Variable. Kostenoptimale Mengen sind ein eigenes Problem. | nicht gebaut |
 | **Es gibt Vergleichsstandorte mit und ohne hohen Faktor** | Die Formel sagt nichts über die Überlappung; bei fast deterministischer Zuteilung ist die Varianz groß. | Schätzen |
 """

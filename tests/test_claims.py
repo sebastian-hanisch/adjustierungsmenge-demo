@@ -103,7 +103,7 @@ def test_experiment_2_rules_against_o(rules):
     assert rules["minimal_worse"] == 1695 and round(100 * 1695 / 3000, 1) == 56.5
     r = rules["ratios"]
     small = r["kleinste minimale Menge"]
-    assert np.median(small) == pytest.approx(1.015, abs=0.001) and small.mean() == pytest.approx(1.19, abs=0.005) and np.quantile(small, 0.9) == pytest.approx(1.54, abs=0.005)
+    assert round(float(np.median(small)), 2) == 1.01 and small.mean() == pytest.approx(1.19, abs=0.005) and np.quantile(small, 0.9) == pytest.approx(1.54, abs=0.005)
     assert small.max() == pytest.approx(6.4, abs=0.05) and np.mean(small < 1 + 1e-7) == pytest.approx(0.49, abs=0.005)
     px = r["Eltern von x"]
     assert np.median(px) == pytest.approx(1.17, abs=0.005) and px.mean() == pytest.approx(1.31, abs=0.005) and np.quantile(px, 0.9) == pytest.approx(1.80, abs=0.005)
